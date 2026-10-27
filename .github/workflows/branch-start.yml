@@ -1,0 +1,19 @@
+# Copy into EVERY repo as: .github/workflows/branch-start.yml
+# Replace YOUR_GITHUB_USERNAME below.
+
+name: Jira Branch Start
+
+on:
+  create:     # fires when a new branch (or tag) is pushed; the job ignores tags
+
+permissions:
+  contents: read
+
+jobs:
+  jira-start:
+    uses: paramveer-8th/pr-automation/.github/workflows/branch-start.yml@main
+    with:
+      jira_projects: "LYRIC"
+      from_statuses: "To Do"         # add e.g. ",Backlog" if you want those moved too
+      target_status: "In Progress"   # must match your Jira status name
+    secrets: inherit
