@@ -61,7 +61,8 @@ jobs:
           fi
 
           # Jira key from branch name or PR title, e.g. feature/ABC-123-fix-login
-          KEY=$(echo "$HEAD_REF $PR_TITLE" | grep -oE '[A-Z][A-Z0-9]+-[0-9]+' | head -n 1 || true)
+          # Optional: if no key is found, KEY stays empty and the workflow carries on.
+          KEY=$(printf '%s %s' "$HEAD_REF" "$PR_TITLE" | grep -oE '[A-Z][A-Z0-9]+-[0-9]+' | head -n 1) || KEY=""
           echo "$KEY" > ticket.txt
           echo "Ticket key: ${KEY:-none}"
 
