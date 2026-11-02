@@ -19,3 +19,12 @@ YML 
 i can still see anthoripic key please check and give me latest fie
 
 The saved file has no Anthropic references. A search for “anthropic” and “claude” in it returns nothing, so you were probably looking at the earlier download. The updated copy is in the chat sidebar and has the same path as before: .github/workflows/pr-description.yml.
+
+
+The Jira ticket is only there to fill the Ticket: line in your template. The workflow looks for a key like ABC-123 in the branch name or PR title and puts it in the description, as a link if you set JIRA_BASE_URL. It has no other use. Jira’s own GitHub integration also uses that key to link the PR to the issue.
+
+The ticket was meant to be optional. If no key is found, the workflow leaves it empty and the model writes N/A in the Ticket field. As I read the earlier version, that should not have failed, but I can’t see your run, so something else may be causing the error. I’ve made the key lookup fail-safe in the file anyway. The updated file is at the same path, .github/workflows/pr-description.yml, and the only change is that one line.
+
+If the error continues, open the failed run in the repo’s Actions tab, click the red step, and send me the error text. The likely causes are the Gemini call (wrong key, wrong model name, or a quota limit) or the diff step (the base branch not being fetched). Those would look like a ticket problem only because the ticket step runs just before them.
+
+If you don’t want Jira in this at all, I can remove the ticket logic and the JIRA_BASE_URL variable, and leave Ticket: for authors to fill in by hand

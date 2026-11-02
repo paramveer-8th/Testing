@@ -70,7 +70,7 @@ jobs:
         if: steps.gate.outputs.run == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
           JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }} # e.g. https://yourorg.atlassian.net/browse
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
@@ -117,11 +117,15 @@ jobs:
               contents: [{role: "user", parts: [{text: $user}]}],
               generationConfig: {temperature: 0.2, maxOutputTokens: 4096}}' > req.json
 
-          curl -sS --fail-with-body \
+          if ! curl -sS --fail-with-body \
             "https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent" \
             -H "x-goog-api-key: $GEMINI_API_KEY" \
             -H "content-type: application/json" \
-            -d @req.json > resp.json
+            -d @req.json > resp.json; then
+            echo "Gemini request failed for model '$MODEL'. Response body:"
+            cat resp.json
+            exit 1
+          fi
 
           jq -r '[.candidates[0].content.parts[]?.text] | join("")' resp.json > desc.md
 
