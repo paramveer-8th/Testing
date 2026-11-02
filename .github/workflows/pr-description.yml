@@ -70,7 +70,7 @@ jobs:
         if: steps.gate.outputs.run == 'true'
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.8-flash' }}
           JIRA_BASE_URL: ${{ vars.JIRA_BASE_URL }} # e.g. https://yourorg.atlassian.net/browse
           PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
